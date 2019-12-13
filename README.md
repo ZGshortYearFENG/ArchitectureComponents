@@ -309,5 +309,27 @@ class MainActivity : AppCompatActivity() {
 }
 ```
 
+## LiveData
+
+如果LiveData的生命周期处于STARTED或RESUMED状态，则它认为由Observer类表示的观察者处于活动状态。 LiveData仅将有关更新的信息通知活动的观察者。注册为观看LiveData对象的非活动观察者不会收到有关更改的通知。
+
+livedata的优点：
+
+数据改变通知UI变化
+
+防止内存泄漏
+
+后台activity不会崩溃
+
+不需要手动处理生命周期
+
+获取最新数据 非活动状态到活动状态
+
+支持配置更改 如果由于配置更改（例如设备旋转）而重新创建活动或片段，则该活动或片段将立即接收最新的可用数据。
+
+数据共享
+
+[livedata](https://chsmy.github.io/2019/04/20/technology/Android-Jetpack%E4%B9%8BLiveData/)
+
 参考：
 [architecture-samples](https://github.com/android/architecture-samples)
