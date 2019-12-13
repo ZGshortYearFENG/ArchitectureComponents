@@ -202,5 +202,9 @@ fun setPaddingLeft(view: View, padding: Int) {
 
 ##### 双向绑定（挖坑还没看懂）
 
+## Lifecycle
+
+
+
 参考：
 [architecture-samples](https://github.com/android/architecture-samples)
