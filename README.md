@@ -204,7 +204,110 @@ fun setPaddingLeft(view: View, padding: Int) {
 
 ## Lifecycle
 
+生命周期感知组件执行操作以响应另一个组件的生命周期状态变化，例如活动和片段。这些组件可帮助您生成组织更好，更轻量的代码，更易于维护。
+```kotlin
+internal class MyLocationListener(
+        private val context: Context,
+        private val callback: (Location) -> Unit
+) {
 
+    fun start() {
+        // connect to system location service
+    }
+
+    fun stop() {
+        // disconnect from system location service
+    }
+}
+
+class MyActivity : AppCompatActivity() {
+    private lateinit var myLocationListener: MyLocationListener
+
+    override fun onCreate(...) {
+        myLocationListener = MyLocationListener(this) { location ->
+            // update UI
+        }
+    }
+
+    public override fun onStart() {
+        super.onStart()
+        myLocationListener.start()
+        // manage other components that need to respond
+        // to the activity lifecycle
+    }
+
+    public override fun onStop() {
+        super.onStop()
+        myLocationListener.stop()
+        // manage other components that need to respond
+        // to the activity lifecycle
+    }
+}
+```
+即使该示例看起来不错，在实际的应用程序中，您仍然会响应生命周期的当前状态而进行过多的调用来管理UI和其他组件。管理多个组件会在生命周期方法（例如onStart()和中）中 放置大量代码onStop()，这使它们难以维护。
+
+而且，不能保证组件在活动或片段停止之前就已启动。如果我们需要执行长时间运行的操作（例如检入），则尤其如此onStart()。这可能导致争用情况，其中onStop()方法在之前完成onStart()，从而使组件的生存期超过了所需的生存期。
+```kotlin
+internal class MyLocationListener(
+        private val context: Context,
+        private val lifecycle: Lifecycle,
+        private val callback: (Location) -> Unit
+) {
+
+    private var enabled = false
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun start() {
+        if (enabled) {
+            // connect
+        }
+    }
+
+    fun enable() {
+        enabled = true
+        if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+            // connect if not connected
+        }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    fun stop() {
+        // disconnect if connected
+    }
+}
+```
+使用`lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)`可以判断是否在onstart执行
+
+lifecycle使用
+实现lifecycleobserver
+```kotlin
+class MyLifeCycleObserver : LifecycleObserver {
+
+    private val TAG = "MyLifecycleObserver"
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    fun created(){
+        Log.d(TAG, "Created called")
+    }
+}
+```
+AppCompatActivity实现LifeCycleOwner
+```kotlin
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var lifeCycleObserver: MyLifeCycleObserver
+    private lateinit var lifeCycleOwner: MyLifeCycleOwner
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        lifeCycleObserver = MyLifeCycleObserver()
+        // 通过调用Lifecycle类的addObserver（）方法并传递观察者的实例来添加观察者
+        lifecycle.addObserver(lifeCycleObserver)
+    }
+}
+```
 
 参考：
 [architecture-samples](https://github.com/android/architecture-samples)
