@@ -1,2 +1,2 @@
-include ':app'
+include ':app', ':viewbinding', ':databinding'
 rootProject.name='ArchitectureComponents'

@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">DataBinding</string>
+    <string name="title_activity_observable_field">ObservableFieldActivity</string>
+    <string name="title_activity_view_model">ViewModelActivity</string>
+</resources>
