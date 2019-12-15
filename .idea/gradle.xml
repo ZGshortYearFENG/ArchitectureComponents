@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$/databinding" />
             <option value="$PROJECT_DIR$/lifecycle" />
             <option value="$PROJECT_DIR$/livedata" />
+            <option value="$PROJECT_DIR$/paging" />
             <option value="$PROJECT_DIR$/viewbinding" />
           </set>
         </option>

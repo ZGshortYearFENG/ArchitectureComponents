@@ -331,5 +331,27 @@ livedata的优点：
 
 [livedata](https://chsmy.github.io/2019/04/20/technology/Android-Jetpack%E4%B9%8BLiveData/)
 
+## Paging
+
+分页库可帮助您一次加载和显示小块数据。按需加载部分数据可减少网络带宽和系统资源的使用
+
+PagedList PagedListAdapter DataSource
+
+知道简单用法，结合了network的有点复杂暂不看
+
+## Room
+
+上面的代码中也有简单的使用
+
+## ViewModel
+
+之前做的ppt中有部分viewmodel内容，可搬移到此处
+这周发版好像军哥因为这个viewmodel的坑搞一晚上bug，好像是内存泄漏的问题
+
+## WorkManager
+
+## Saving States
+
+
 参考：
 [architecture-samples](https://github.com/android/architecture-samples)

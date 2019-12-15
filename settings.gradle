@@ -1,2 +1,2 @@
-include ':app', ':viewbinding', ':databinding', ':lifecycle', ':livedata'
+include ':app', ':viewbinding', ':databinding', ':lifecycle', ':livedata', ':paging'
 rootProject.name='ArchitectureComponents'
