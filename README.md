@@ -1,48 +1,44 @@
 # Android Architecture Component
-Android体系结构组件是一组库，可帮助您设计健壮，可测试和可维护的应用程序。从用于管理UI组件生命周期和处理数据持久性的类开始。 
 
-了解将健壮的应用程序与应用程序架构指南放在一起的基础知识。 管理您应用的生命周期。
+健壮，可测试和可维护的应用程序  
+管理UI组件生命周期和处理数据持久性  
+新的可感知生命周期的组件可帮助您管理活动和碎片化生命周期  
+保留配置更改，避免内存泄漏，并轻松将数据加载到UI中  
+LiveData构建数据对象，在数据更改时通知视图   
+ViewModel存储与UI相关的数据，这些数据不会在应用程序旋转时被破坏   
+Room提供了SQLite语句的编译时检查，返回RxJava，Flowable和LiveData可观察对象  
 
-新的可感知生命周期的组件可帮助您管理活动和碎片化生命周期。保留配置更改，避免内存泄漏，并轻松将数据加载到UI中。 
-
-使用LiveData构建数据对象，这些数据对象在基础数据库更改时通知视图。 
-
-ViewModel存储与UI相关的数据，这些数据不会在应用程序旋转时被破坏。 
-
-Room是一个SQLite对象映射库。使用它来避免样板代码，并轻松地将SQLite表数据转换为Java对象。 Room提供了SQLite语句的编译时检查，并且可以返回RxJava，Flowable和LiveData可观察对象。
-
-Overview基本介绍了Architecture Component比较好用的几个组件 lifecycle livedata viewmodel room
+- [x] [View Binding](https://github.com/ZGshortYearFENG/ArchitectureComponents#view-binding)
+- [x] Data Binding
+- [x] Lifecycles
+- [x] LiveData
+- [x] Paging
+- [x] ViewModel
+- [x] Room
+- [ ] WorkManager
+- [ ] Saving States
+- [ ] Kotlin coroutines
 
 ## View Binding
+
 视图绑定是一项功能，使您可以更轻松地编写与视图交互的代码。在模块中启用视图绑定后，它将为该模块中存在的每个XML布局文件生成一个绑定类。绑定类的实例包含对在相应布局中具有ID的所有视图的直接引用。 在大多数情况下，视图绑定会替换findViewById。
 
 需要as升级到3.6版本
 
-### 与使用findViewById相比，视图绑定具有重要的优势： 
+### 优点： 
 
-Null safety：由于视图绑定会创建对视图的直接引用，因此不会因无效的视图ID而导致空指针异常的风险。此外，当视图仅在布局的某些配置中存在时，在绑定类中包含其引用的字段将用@Nullable标记。 
-
-Type safety：每个绑定类中的字段具有与其在XML文件中引用的视图匹配的类型。这意味着没有类强制转换异常的风险。 这些差异意味着布局和代码之间的不兼容性将导致编译在编译时而不是在运行时失败。
-
+Null safety：由于视图绑定会创建对视图的直接引用，因此不会因无效的视图ID而导致空指针异常的风险。此外，当视图仅在布局的某些配置中存在时，在绑定类中包含其引用的字段将用@Nullable标记。  
+Type safety：每个绑定类中的字段具有与其在XML文件中引用的视图匹配的类型。这意味着没有类强制转换异常的风险。 这些差异意味着布局和代码之间的不兼容性将导致编译在编译时而不是在运行时失败。  
 
 ### 与DataBinding的区别 
 
-ViewBinding和DataBinding都生成可用于直接引用视图的绑定类。但是，有明显的区别： 
-
-DataBinding仅处理使用<layout>标记创建的数据绑定布局。 
-
-ViewBinding不支持布局变量或布局表达式，因此不能用于将布局与XML数据绑定。
+ViewBinding和DataBinding都生成可用于直接引用视图的绑定类。但是，有明显的区别：  
+1.DataBinding仅处理使用<layout>标记创建的数据绑定布局。   
+2.ViewBinding不支持布局变量或布局表达式，因此不能用于将布局与XML数据绑定。  
 
 ## Data Binding
-数据绑定库是一个支持库，使用该库，您可以使用声明性格式而非编程方式将布局中的UI组件绑定到应用程序中的数据源。 
 
-通过在布局文件中绑定组件，您可以删除活动中的许多UI框架调用，从而使它们更易于维护。这也可以提高应用程序的性能，并有助于防止内存泄漏和空指针异常。
-
-内存泄漏：？？
-
-空指针异常：？？
-
-应该是没有上面两个的用处的，就一个数据绑定跟findviewbyid
+[每日一问 有没有使用过 DataBinding ，有什么优点、缺点，遇到过哪些坑？](https://www.wanandroid.com/wenda/show/8634)
 
 ### 基本使用
 
@@ -72,17 +68,19 @@ var databinding: ActivityMainBinding =
 
 ### layouts binding 表达式
 
-### 1/ 空合并运算符
+#### 1.空合并运算符
+
 ````xml
 android:text="@{user.displayName ?? user.lastName}"
 android:text="@{user.displayName != null ? user.displayName : user.lastName}"
 ````
 
+#### 2.避免空指针异常
 
-#### 2/ 避免空指针异常
 生成的数据绑定代码自动检查空值，并避免空指针异常。例如，在表达式@ {user.name}中，如果user为null，则为user.name分配其默认值null。如果您引用user.age，age是int类型，则数据绑定将使用默认值0
 
-#### 3/ Collections
+#### 3.Collections
+
 ````xml
 <data>
     <import type="android.util.SparseArray"/>
@@ -105,17 +103,14 @@ android:text="@{map[key]}"
 Databinding 支持include viewstub，不支持merge
 
 ### Observable objects
-可观察性是指对象将其数据更改通知他人的能力。数据绑定库使您可以观察对象，字段或集合。 任何普通的旧对象都可以用于数据绑定，但是修改对象不会自动导致UI更新。数据绑定可用于使您的数据对象在数据更改时通知其他对象（称为侦听器）。有三种不同类型的可观察类：对象，字段和集合。 当这些可观察数据对象之一绑定到UI且数据对象的属性更改时，UI将自动更新。
 
-自己总结就是不用代码livedata.observe去监控数据变化影响ui，可以双向绑定ui变化反应到data，data变化可以影响ui
+可观察性是指对象将其数据更改通知他人的能力。数据绑定库使您可以观察对象，字段或集合。 任何普通的旧对象都可以用于数据绑定，但是修改对象不会自动导致UI更新。数据绑定可用于使您的数据对象在数据更改时通知其他对象（称为侦听器）。有三种不同类型的可观察类：对象，字段和集合。 当这些可观察数据对象之一绑定到UI且数据对象的属性更改时，UI将自动更新。  
+自己总结就是不用代码livedata.observe去监控数据变化影响ui，可以双向绑定ui变化反应到data，data变化可以影响ui  
+ps: Android Studio 3.1及更高版本允许您用LiveData对象替换可观察字段，这为您的应用程序提供了更多好处。有关更多信息，请参见使用LiveData通知UI有关数据更改。  
 
-ps: Android Studio 3.1及更高版本允许您用LiveData对象替换可观察字段，这为您的应用程序提供了更多好处。有关更多信息，请参见使用LiveData通知UI有关数据更改。
-
-属性更改通知器
-    
 ### 生成的绑定类
 
-```
+````kotlin
 override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     // 1
@@ -131,9 +126,9 @@ override fun onCreate(savedInstanceState: Bundle?) {
     val viewRoot = LayoutInflater.from(this).inflate(layoutId, parent, attachToParent)
     val binding: ViewDataBinding? = DataBindingUtil.bind(viewRoot)
 }
-```
+````
 
-##### ViewStub DataBinding
+#### ViewStub DataBinding
 
 与普通视图不同，ViewStub对象以不可见视图开始。当它们变为可见或被明确告知要膨胀时，它们会通过膨胀另一个布局来替换自身。 因为ViewStub本质上从视图层次结构中消失了，所以绑定对象中的视图也必须消失以允许被垃圾回收声明。因为视图是最终视图，所以ViewStubProxy对象将在生成的绑定类中代替ViewStub，从而使您可以在存在ViewStub时访问ViewStub，也可以在扩展ViewStub时访问已扩展的视图层次结构。 当膨胀另一个布局时，必须为新布局建立一个绑定。因此，ViewStubProxy必须侦听ViewStub OnInflateListener并在需要时建立绑定。由于在给定时间只能存在一个侦听器，因此ViewStubProxy允许您设置OnInflateListener，在建立绑定后将调用它。
 
@@ -155,15 +150,12 @@ public void inflateViewStub(View view) {
 }
 ````
 
-##### 立即绑定
+#### 立即绑定
 
 当变量或可观察对象发生更改时，绑定将安排在下一帧之前更改。但是，有时绑定必须立即执行。要强制执行，请使用executePendingBindings（）方法。
 当你改变了数据以后(在你设置了Observable观察器的情况下)会马上刷新ui, 但是会在下一帧才会刷新UI, 存在一定的延迟时间. 在这段时间内hasPendingBindings()会返回true. 如果想要同步(或者说立刻)刷新UI可以马上调用executePendingBindings().
 
-#### Binding adapters
-
-
-##### 设置属性值
+#### 设置属性值
 
 例如，给定android：text =“ @ {user.name}”表达式，该库将寻找一个setText（arg）方法，该方法接受user.getName（）返回的类型。如果user.getName（）的返回类型为String，则库将查找接受String参数的setText（）方法。如果表达式返回一个int，则库将搜索一个接受int参数的setText（）方法。表达式必须返回正确的类型，必要时可以转换返回值。
 
@@ -195,16 +187,17 @@ fun setPaddingLeft(view: View, padding: Int) {
 }
 ```
 
-##### 与livedata配合使用
+#### 与livedata配合使用
 
 应该要设置setLifecycleOwner
 设置应用于观察此绑定中* LiveData更改的{@link LifecycleOwner}。如果{@link LiveData}位于绑定表达式*之一中，并且未设置LifecycleOwner，则将不会观察LiveData，并且不会将其更新*传播到UI。
 
-##### 双向绑定（挖坑还没看懂）
+#### 双向绑定（挖坑还没看懂）
 
 ## Lifecycle
 
 生命周期感知组件执行操作以响应另一个组件的生命周期状态变化，例如活动和片段。这些组件可帮助您生成组织更好，更轻量的代码，更易于维护。
+
 ```kotlin
 internal class MyLocationListener(
         private val context: Context,
@@ -311,23 +304,15 @@ class MainActivity : AppCompatActivity() {
 
 ## LiveData
 
-如果LiveData的生命周期处于STARTED或RESUMED状态，则它认为由Observer类表示的观察者处于活动状态。 LiveData仅将有关更新的信息通知活动的观察者。注册为观看LiveData对象的非活动观察者不会收到有关更改的通知。
-
-livedata的优点：
-
-数据改变通知UI变化
-
-防止内存泄漏
-
-后台activity不会崩溃
-
-不需要手动处理生命周期
-
-获取最新数据 非活动状态到活动状态
-
-支持配置更改 如果由于配置更改（例如设备旋转）而重新创建活动或片段，则该活动或片段将立即接收最新的可用数据。
-
-数据共享
+如果LiveData的生命周期处于STARTED或RESUMED状态，则它认为由Observer类表示的观察者处于活动状态。 LiveData仅将有关更新的信息通知活动的观察者。注册为观看LiveData对象的非活动观察者不会收到有关更改的通知。  
+livedata的优点：  
+数据改变通知UI变化  
+防止内存泄漏  
+后台activity不会崩溃  
+不需要手动处理生命周期  
+获取最新数据 非活动状态到活动状态  
+支持配置更改 如果由于配置更改（例如设备旋转）而重新创建活动或片段，则该活动或片段将立即接收最新的可用数据。  
+数据共享  
 
 [livedata](https://chsmy.github.io/2019/04/20/technology/Android-Jetpack%E4%B9%8BLiveData/)
 
@@ -345,13 +330,9 @@ PagedList PagedListAdapter DataSource
 
 ## ViewModel
 
-之前做的ppt中有部分viewmodel内容，可搬移到此处
-这周发版好像军哥因为这个viewmodel的坑搞一晚上bug，好像是内存泄漏的问题
-
-## WorkManager
-
-## Saving States
-
+背景：
+系统销毁或者重新创建一个UI控制器，那么你存储在其中的任何与UI相关的临时数据都丢失  
+UI控制器经常需要进行异步调用，这可能需要一些时间才能返回，UI控制器需要管理这些调用，并确保系统在销毁后对其进行清理，以避免潜在的内存泄露  
 
 参考：
 [architecture-samples](https://github.com/android/architecture-samples)
